@@ -1,0 +1,10 @@
+export PROJECT_ID=proyecto-ml2-407800
+docker build -t gcr.io/${PROJECT_ID}/web-app-dementia:v1 .
+gcloud auth configure-docker
+docker push gcr.io/${PROJECT_ID}/web-app-dementia:v1
+gcloud config set project $PROJECT_ID
+gcloud config set compute/zone us-east1-b
+gcloud container clusters create dementia-cluster --num-nodes=2
+kubectl create deployment web-app-dementia --image=gcr.io/${PROJECT_ID}/web-app-dementia:v1
+kubectl expose deployment web-app-dementia --type=LoadBalancer --port 80 --target-port 8080
+kubectl get service
